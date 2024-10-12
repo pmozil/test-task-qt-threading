@@ -26,6 +26,17 @@ The setup was done using QtCreator so as to simplify the boilerplate generation.
    - The processed numbers are displayed in a third list box.
    - Takes the numbers approx. each 20 milliseconds - a consumer acts faster than the producer.
 
+## Application layout
+
+Allication when launched:
+
+![Application when launched](./images/app_empty.jpg)
+
+
+Allication in progress:
+
+![Application when launched](./images/app_in_progress.jpg)
+
 ## Widgets
 
 The application features the following elements:
