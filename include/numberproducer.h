@@ -34,22 +34,9 @@ public:
 
     ~NumberProducer();
 
-    void enable_generation()
-    {
-        m_is_active.store(true);
-        m_is_active_cond.wakeOne();
-    }
-    void disable_generation()
-    {
-        m_is_active.store(false);
-        m_is_active_cond.wakeOne();
-    }
-
-    void kill()
-    {
-        m_die.store(true);
-        m_is_active_cond.wakeOne();
-    }
+    void enable_generation();
+    void disable_generation();
+    void kill();
 };
 
 #endif // NUMBERPRODUCER_H

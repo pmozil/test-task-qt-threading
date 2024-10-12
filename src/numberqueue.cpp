@@ -3,6 +3,18 @@
 NumberQueue::NumberQueue(QListWidget *list_w, QMutex *mtx)
     : QThread(nullptr), main_mutex{mtx}, list_widget{list_w} {}
 
+NumberQueue::~NumberQueue()
+{
+    m_die.store(true);
+    m_buffer_not_empty.wakeAll();
+}
+
+void NumberQueue::kill()
+{
+    m_die.store(true);
+    m_buffer_not_empty.wakeAll();
+}
+
 void NumberQueue::push(int new_num) {
     const QMutexLocker lock(&m_num_mtx);
     m_buffer.push_back(new_num);

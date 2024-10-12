@@ -43,3 +43,21 @@ void NumberProducer::m_thread_worker_generate_numbers()
         }
     } while (!m_die.load());
 }
+
+void NumberProducer::enable_generation()
+{
+    m_is_active.store(true);
+    m_is_active_cond.wakeOne();
+}
+
+void NumberProducer::disable_generation()
+{
+    m_is_active.store(false);
+    m_is_active_cond.wakeOne();
+}
+
+void NumberProducer::kill()
+{
+    m_die.store(true);
+    m_is_active_cond.wakeOne();
+}

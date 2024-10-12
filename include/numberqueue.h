@@ -33,21 +33,13 @@ class NumberQueue : public QThread {
       public:
     NumberQueue(QListWidget *list_w, QMutex *mtx);
 
-    ~NumberQueue()
-    {
-        m_die.store(true);
-        m_buffer_not_empty.wakeAll();
-    }
+    ~NumberQueue();
 
     int get_number();
 
     void push(int);
 
-    void kill()
-    {
-        m_die.store(true);
-        m_buffer_not_empty.wakeAll();
-    }
+    void kill();
 };
 
 #endif // NUMBERPRODUCER_H

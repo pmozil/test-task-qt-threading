@@ -34,3 +34,22 @@ void NumberConsumer::m_thread_worker_consume_numbers()
         }
     } while (!m_die.load());
 }
+
+
+void NumberConsumer::enable_consumption()
+{
+    m_is_active.store(true);
+    m_is_active_cond.wakeOne();
+}
+
+void NumberConsumer::disable_consumption()
+{
+    m_is_active.store(false);
+    m_is_active_cond.wakeOne();
+}
+
+void NumberConsumer::kill()
+{
+    m_die.store(true);
+    m_is_active_cond.wakeOne();
+}
