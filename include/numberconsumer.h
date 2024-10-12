@@ -19,6 +19,7 @@ class NumberConsumer : public QThread {
     std::atomic<bool> m_is_active{false};
     std::atomic<bool> m_die{false};
     NumberQueue *m_num_queue;
+    QWaitCondition m_is_active_cond;
 
     QMutex *main_mutex;
     QListWidget *list_widget;
@@ -32,10 +33,22 @@ class NumberConsumer : public QThread {
 
           ~NumberConsumer() = default;
 
-          void enable_consumption() { m_is_active.store(true); }
-          void disable_consumption() { m_is_active.store(false); }
+          void enable_consumption()
+          {
+              m_is_active.store(true);
+              m_is_active_cond.wakeOne();
+          }
+          void disable_consumption()
+          {
+              m_is_active.store(false);
+              m_is_active_cond.wakeOne();
+          }
 
-          void kill() { m_die.store(true); }
+          void kill()
+          {
+              m_die.store(true);
+              m_is_active_cond.wakeOne();
+          }
 };
 
 #endif // NUMBERPRODUCER_H

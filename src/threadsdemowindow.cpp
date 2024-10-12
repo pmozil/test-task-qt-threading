@@ -24,17 +24,21 @@ ThreadsDemoWindow::ThreadsDemoWindow(QWidget *parent)
 
 ThreadsDemoWindow::~ThreadsDemoWindow()
 {
-    m_number_consumer->kill();
-    m_number_consumer->quit();
-    m_number_consumer->wait();
+    m_number_queue->kill();
 
+    on_thread_1_stop_clicked();
     m_num_producer->kill();
-    m_num_producer->quit();
     m_num_producer->wait();
 
+    on_thread_3_stop_clicked();
+    m_number_consumer->kill();
+    m_number_consumer->wait();
+
+    m_number_queue->wait();
+
     delete m_number_consumer;
-    delete m_number_queue;
     delete m_num_producer;
+    delete m_number_queue;
 
     delete ui;
 }

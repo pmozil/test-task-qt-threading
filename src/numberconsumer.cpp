@@ -15,7 +15,15 @@ void NumberConsumer::run()
 void NumberConsumer::m_thread_worker_consume_numbers()
 {
     do {
-        QThread::msleep(10);
+        QThread::msleep(20);
+        {
+            const QMutexLocker lock(&m_num_mtx);
+            while (!m_is_active.load() && !m_die.load())
+                m_is_active_cond.wait(&m_num_mtx);
+        }
+        if (m_die.load()) {
+            break;
+        }
         if (!m_is_active.load()) {
             continue;
         }

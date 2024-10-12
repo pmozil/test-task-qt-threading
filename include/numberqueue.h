@@ -11,14 +11,13 @@
 #include <QWidget>
 #include <vector>
 
-class NumberQueue : public QThread
-{
+class NumberQueue : public QThread {
     Q_OBJECT
 
-public:
+      public:
     static constexpr int max_array_elems{20};
 
-private:
+      private:
     QMutex m_num_mtx{};
     QWaitCondition m_buffer_not_empty;
     std::vector<int> m_buffer{};
@@ -31,16 +30,24 @@ private:
 
     void run() override;
 
-public:
+      public:
     NumberQueue(QListWidget *list_w, QMutex *mtx);
 
-    ~NumberQueue() = default;
+    ~NumberQueue()
+    {
+        m_die.store(true);
+        m_buffer_not_empty.wakeAll();
+    }
 
     int get_number();
 
     void push(int);
 
-    void kill() { m_die.store(true); }
+    void kill()
+    {
+        m_die.store(true);
+        m_buffer_not_empty.wakeAll();
+    }
 };
 
 #endif // NUMBERPRODUCER_H

@@ -21,16 +21,24 @@ void NumberProducer::m_thread_worker_generate_numbers()
 {
     do {
         QThread::msleep(100);
+        {
+            const QMutexLocker lock(&m_num_mtx);
+            while (!m_is_active.load() && !m_die.load())
+                m_is_active_cond.wait(&m_num_mtx);
+        }
+        if (m_die.load()) {
+            break;
+        }
         if (!m_is_active.load()) {
             continue;
         }
         {
-            QMutexLocker lock(&m_num_mtx);
+            const QMutexLocker lock(&m_num_mtx);
             counter++;
         }
         m_num_queue->push(counter);
         {
-            QMutexLocker lock(main_mutex);
+            const QMutexLocker lock(main_mutex);
             list_widget->addItem(QString::number(counter));
         }
     } while (!m_die.load());
